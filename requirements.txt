@@ -23,7 +23,6 @@ networkx
 numpy
 packaging
 pydantic
-pydantic_core
 pyyaml
 regex
 safetensors
