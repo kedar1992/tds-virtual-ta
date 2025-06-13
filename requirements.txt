@@ -5,3 +5,4 @@ torch
 Pillow
 requests
 beautifulsoup4
+click
