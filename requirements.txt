@@ -1,7 +1,8 @@
 fastapi
-uvicorn
+uvicorn[standard]
 transformers==4.30.2
-torch==2.5
+tokenizers==0.13.3
+torch==2.0.1
 Pillow
 requests
 beautifulsoup4
