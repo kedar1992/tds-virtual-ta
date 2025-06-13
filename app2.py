@@ -6,6 +6,7 @@ from typing import List, Optional
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+from transformers import CLIPProcessor, CLIPModel
 import torch
 import base64
 from io import BytesIO
@@ -50,7 +51,6 @@ def get_openai_embedding(text: str):
 
 def get_image_embedding(base64_image: str):
     try:
-        from transformers import CLIPProcessor, CLIPModel
         image_data = base64.b64decode(base64_image)
         image = Image.open(BytesIO(image_data)).convert("RGB")
         inputs = clip_processor(images=image, return_tensors="pt")
@@ -62,7 +62,6 @@ def get_image_embedding(base64_image: str):
 
 def get_image_embedding_from_url(url: str):
     try:
-        from transformers import CLIPProcessor, CLIPModel
         response = requests.get(url)
         image = Image.open(BytesIO(response.content)).convert("RGB")
         inputs = clip_processor(images=image, return_tensors="pt")
