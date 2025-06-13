@@ -6,3 +6,4 @@ Pillow
 requests
 beautifulsoup4
 click
+h11
