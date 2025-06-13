@@ -13,7 +13,6 @@ import json
 import os
 import glob
 import re
-from functools import lru_cache
 
 # === OpenAI Proxy Config ===
 EMBEDDING_URL = "https://aiproxy.sanand.workers.dev/openai/v1/embeddings"
@@ -30,11 +29,8 @@ class AnswerResponse(BaseModel):
     answer: str
     links: List[dict]
 
-@lru_cache()
-def get_clip_model_and_processor():
-    model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to("cpu")
-    processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-    return model, processor
+clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
 def get_openai_embedding(text: str):
     headers = {
@@ -53,24 +49,22 @@ def get_openai_embedding(text: str):
 
 def get_image_embedding(base64_image: str):
     try:
-        model, processor = get_clip_model_and_processor()
         image_data = base64.b64decode(base64_image)
         image = Image.open(BytesIO(image_data)).convert("RGB")
-        inputs = processor(images=image, return_tensors="pt")
+        inputs = clip_processor(images=image, return_tensors="pt")
         with torch.no_grad():
-            image_features = model.get_image_features(**inputs)
+            image_features = clip_model.get_image_features(**inputs)
         return image_features[0]
     except Exception:
         return None
 
 def get_image_embedding_from_url(url: str):
     try:
-        model, processor = get_clip_model_and_processor()
         response = requests.get(url)
         image = Image.open(BytesIO(response.content)).convert("RGB")
-        inputs = processor(images=image, return_tensors="pt")
+        inputs = clip_processor(images=image, return_tensors="pt")
         with torch.no_grad():
-            image_features = model.get_image_features(**inputs)
+            image_features = clip_model.get_image_features(**inputs)
         return image_features[0]
     except Exception:
         return None
